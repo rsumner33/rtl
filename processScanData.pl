@@ -15,14 +15,14 @@ my(@formattedOutput,@gains,@range)=();
 chomp(my($systimeNow)=`date +%s`);
 
 my($sleepTime)=10;
-my($dataDirectory)="/home/swc/data";
-my($configDirectory)=$dataDirectory."/config";
-my($rawScanDirectory)=$dataDirectory."/scans";
-my($imagesDirectory)=$rawScanDirectory."/images";
-my($gnuplotScriptBase)="/home/swc/bin/gnuplot";
-my($processedScanData)=$rawScanDirectory."/processed";
+my($dataDirectory)="$ENV{DATA}";
+my($configDirectory)="$ENV{CONFIG}";
+my($rawScanDirectory)="$ENV{RAW_SCANS}";
+my($imagesDirectory)="$ENV{SCAN_IMAGES}";
+my($gnuplotScriptBase)="$ENV{GNUPLOT_SCRIPTS}";
+my($processedScanData)="$ENV{PROC_SCANS}";
 my($gpScriptName)="$gnuplotScriptBase/gnuplot.".$systimeNow.".gp";
-my($processedScanDirectory)="$rawScanDirectory/processed";
+
 
 GetOptions (
     "f=s" => \$fileToProcess,
