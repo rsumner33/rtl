@@ -79,6 +79,7 @@ sub addBlanks {
 	print FOUT @{$dataHash{$xValue}};
 	print FOUT "\n";
     }
+    delete(%dataHash);
     close(FOUT);
 }
 
@@ -113,6 +114,7 @@ sub getHighLow {
     $results[1]=$sortedData[0];
     print dateTimeNow()."[getHighLow] Done with hi/low.\n";
     return(@results);
+    delete(@sortedData);
 }
 
 sub dateTimeNow {
