@@ -8,13 +8,14 @@ $0=~s/^.+\///;
 
 chomp(my($hostInfo)=`uname -a`);
 chomp(my($gnuPlotExecutable)=`which gnuplot`);
-my($fileToProcess,$outPutImageName,$processedScan,$execGnuPlot)=();
+my($fileToProcess,$outPutImageName,$processedScan,$execGnuPlot,$up)=();
 my($dbHigh,$dbLow,$rangeHigh,$rangeLow)=();
 my(%dataHash)=();
 my(@formattedOutput,@gains,@range)=();
 chomp(my($systimeNow)=`date +%s`);
 
 my($sleepTime)=10;
+my($upConverterOffset)="125000000";
 my($dataDirectory)="$ENV{DATA}";
 my($configDirectory)="$ENV{CONFIG}";
 my($rawScanDirectory)="$ENV{RAW_SCANS}";
@@ -27,6 +28,7 @@ my($gpScriptName)="$gnuplotScriptBase/gnuplot.".$systimeNow.".gp";
 GetOptions (
     "f=s" => \$fileToProcess,
     "o=s" => \$outPutImageName,
+    "u"   => \$up,
     "x"   => \$execGnuPlot
     );
 
@@ -42,6 +44,9 @@ $rangeHigh=@rangeHighLow[0];
 $rangeLow=@rangeHighLow[1];
 
 print dateTimeNow()."\t=========================================================================\n";
+if($up) {
+print dateTimeNow()."\tUsing offset of [$upConverterOffset] for upconverter\n";
+}
 print dateTimeNow()."\tdbMax                : $dbHigh\n";
 print dateTimeNow()."\tdbMin                : $dbLow\n";
 print dateTimeNow()."\tXmax                 : $rangeHigh\n";
@@ -94,6 +99,9 @@ sub loadRawScanData {
 	next if ($gain=~/nan/);
 	my($dateTime)=$date." ".$time;
 	my($truFreq)=$freqLow + ($numSamples * $freqStep);
+	if($up) {
+		$truFreq=$truFreq-$upConverterOffset;
+	}
 	my($dataLine)="$dateTime,$truFreq,$gain";
 	push(@formattedOutput,"$dataLine\n");
 	push(@gains,$gain);
